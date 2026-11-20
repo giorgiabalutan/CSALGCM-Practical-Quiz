@@ -139,9 +139,9 @@ def align_and_validate_dp(
 
             # 5. Hyphen insertion/deletion (cost 1).
             if i < n and word1[i] == "-":
-                relax(i + 1, j, current + 1, i, j, "- vs. none")
+                relax(i + 1, j, current + 1, i, j, "'-' vs. none")
             if j < m and word2[j] == "-":
-                relax(i, j + 1, current + 1, i, j, "none vs. -")
+                relax(i, j + 1, current + 1, i, j, "none vs. '-'")
 
     total_cost = dp[n][m]
     if total_cost == inf or total_cost == 0 or total_cost > max_edits:
