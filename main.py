@@ -9,7 +9,7 @@ from loader import build_vocab
 
 
 def export_to_csv(results: Iterable[dict[str, object]], output_filepath: str) -> None:
-    """Write the required five-column UTF-8 CSV."""
+    """ writing the CSV file """
     fieldnames = [
         "word1", "word2", "word1_count", "word2_count", "character_difference"
     ]
@@ -20,7 +20,6 @@ def export_to_csv(results: Iterable[dict[str, object]], output_filepath: str) ->
 
 
 def run_self_tests() -> None:
-    """Verify prompt examples and team research cases."""
     test_cases = [
         ("politiko", "pulitiko", True, "o vs. u"),
         ("lalaki", "lalake", True, "i vs. e"),
@@ -53,10 +52,8 @@ def run_self_tests() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Filipino spelling-variant detector")
-    parser.add_argument("input", nargs="?", help="Dataset path (.txt, .csv, .tsv, .jsonl, .json, .db, .sql)")
+    parser.add_argument("input", nargs="?", help="Dataset path (.txt)")
     parser.add_argument("--out", default="spelling_variants.csv", help="Output CSV path")
-    parser.add_argument("--col", default=None, help="Text column name for CSV/TSV/JSONL/JSON/SQLite")
-    parser.add_argument("--table", default=None, help="Table name for SQLite databases")
     parser.add_argument("--min-count", type=int, default=1, help="Minimum word frequency (default: 1)")
     parser.add_argument("--max-edits", type=int, default=2, help="Maximum allowed orthographic changes")
     parser.add_argument(
@@ -80,12 +77,7 @@ def main() -> None:
         parser.error("the following arguments are required: input (or use --test)")
 
     print(f"[1/3] Reading and counting words from {args.input}...")
-    vocab = build_vocab(
-        args.input,
-        min_count=args.min_count,
-        text_column=args.col,
-        table_name=args.table,
-    )
+    vocab = build_vocab(args.input, min_count=args.min_count)
     print(f"      Unique words retained: {len(vocab):,}")
 
     print("[2/3] Generating and verifying candidate pairs...")
