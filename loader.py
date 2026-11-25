@@ -24,10 +24,14 @@ def clean_and_tokenize(text: str) -> Iterator[str]:
     """yield clean lowercase word tokens; strip URLs/HTML tags and retain internal hyphens."""
     if not text:
         return
-    text = normalize_text(text)
+    text = unicodedata.normalize("NFC", text)
     text = URL_HTML_RE.sub(" ", text)
+
     for match in WORD_RE.finditer(text):
-        word = match.group(0).strip("-")
+        raw_word = match.group(0).strip("-")
+        if any(c.isupper() for c in raw_word):
+            continue
+        word = raw_word.lower()
         if 2 <= len(word.replace("-", "")) <= 40 and word not in SPELL:
             yield word
 
@@ -46,9 +50,9 @@ def stream_text(filepath: str) -> Iterator[str]:
 
 def build_vocab(filepath: str, min_count: int = 1,) -> Counter[str]:
     """frequency Counter"""
-
     if min_count < 1:
         raise ValueError("min_count must be at least 1")
+    
     counts: Counter[str] = Counter()
     for text in stream_text(filepath):
         counts.update(clean_and_tokenize(text))
