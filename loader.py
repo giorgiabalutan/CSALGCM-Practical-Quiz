@@ -7,10 +7,13 @@ import unicodedata
 from collections import Counter
 from pathlib import Path
 from typing import Iterator
+from spellchecker import SpellChecker
 
 from rules import WORD_RE
 
 URL_HTML_RE = re.compile(r"https?://\S+|www\.\S+|<[^>]+>")
+
+SPELL = SpellChecker()
 
 def normalize_text(text: str) -> str:
     """normalize Unicode to NFC and lowercase without stripping Filipino letters (e.g. ñ)."""
@@ -25,7 +28,7 @@ def clean_and_tokenize(text: str) -> Iterator[str]:
     text = URL_HTML_RE.sub(" ", text)
     for match in WORD_RE.finditer(text):
         word = match.group(0).strip("-")
-        if 2 <= len(word.replace("-", "")) <= 40:
+        if 2 <= len(word.replace("-", "")) <= 40 and word not in SPELL:
             yield word
 
 def stream_text(filepath: str) -> Iterator[str]:
@@ -43,6 +46,7 @@ def stream_text(filepath: str) -> Iterator[str]:
 
 def build_vocab(filepath: str, min_count: int = 1,) -> Counter[str]:
     """frequency Counter"""
+
     if min_count < 1:
         raise ValueError("min_count must be at least 1")
     counts: Counter[str] = Counter()
