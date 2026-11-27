@@ -29,7 +29,7 @@ def run_self_tests() -> None:
         ("pangbuhos", "pambuhos", True, "ng vs. m"),
         ("panlinis", "panglinis", True, "n vs. ng"),
         ("biyaya", "byaya", True, "iy vs. y"),
-        ("pag-ibig", "pagibig", True, "- vs. none"),
+        ("pag-ibig", "pagibig", True, "'-' vs. none"),
         ("opo", "upo", False, ""),
         ("polittico", "pulitiko", False, ""),
         ("pare", "pari", False, ""),
